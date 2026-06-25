@@ -1,7 +1,7 @@
 [project]
 name = "Tproject"
 version = "0.0.1"
-authors = [{ name = "vladichoffx@gmail.com" }]
+authors = [{ name = "vladicho" }]
 requires-python = ">=3.10,<3.13"
 dependencies = [
     # Any dependencies for jobs and pipelines in this project can be added here
