@@ -68,3 +68,6 @@ with this project. It's also possible to interact with it directly using the CLI
    ```
    $ uv run pytest
    ```
+
+# trip-data-pipeline
+End-to-end Databricks data pipeline for processing trip and satisfaction data, built with Spark Declarative Pipelines and a Medallion architecture (Bronze → Silver → Gold) using asset bundles.
