@@ -16,7 +16,8 @@ def get_rules(tag):
       for row in rules_df
   }
 
-quarantine_rules = "NOT({0})".format(" AND ".join(get_rules('validity').values()))
+# Quarantined rules, iteracion was added (this is diff from databricks docs) in order to handle multiple conditions within a single expectation
+quarantine_rules = "NOT({0})".format(" AND ".join(f"({rule})" for rule in get_rules('validity').values()))
 
 # Staging temporary table for data quality checks
 @dp.table(
