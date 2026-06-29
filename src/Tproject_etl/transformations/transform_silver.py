@@ -16,15 +16,26 @@ def get_rules(tag):
       for row in rules_df
   }
 
+quarantine_rules = "NOT({0})".format(" AND ".join(get_rules('validity').values()))
+
+# Staging temporary table for data quality checks
+@dp.table(
+  temporary=True,
+  partition_cols=["is_quarantined"],
+)
+@dp.expect_all(get_rules('validity'))
+def driver_data_quarantine():
+  return (
+    spark.readStream.table("driver_satisfaccion_bronze").withColumn("is_quarantined", F.expr(quarantine_rules))
+  )
 
 @dp.table(
     name="driver_satisfaccion_silver",
     comment="Cleaned and enriched driver satisfaction data. Includes rating nullability fix, estado mapping, and temp features."
 )
-@dp.expect_all_or_drop(get_rules('validity'))
 
 def driver_satisfaccion_silver():
-    df = spark.readStream.table("driver_satisfaccion_bronze")
+    df = spark.readStream.table("driver_data_quarantine").filter("is_quarantined=false")
     
     # Apply transformations to fix rating, map state of the row and create an array of tags (not just string as tags)
     df = utils.fix_rating_viaje(df)
@@ -43,19 +54,12 @@ def driver_satisfaccion_silver():
 
     return df
 
-
-'''
 @dp.table(
-   name='driver_satisfaccion_quarantine_silver',
-   comment='Contains rows that failed the data quality expectations so they can be audit later, this table is append-only behaviour'
+    name="driver_satisfaccion_quarantined_silver",
+    comment="Quarantined data from driver table that not met the data quality expectations."
 )
-def driver_satisfaccion_quarantine():
-    df_bronze = spark.readStream.table("driver_satisfaccion_bronze")
-    quarantine_rules = "NOT({0})".format(" AND ".join(get_rules('validity').values()))
-    df_errors = (
-        df_bronze
-        .withColumn("quarantine_timestamp", F.current_timestamp())
-    )
-    
-    return df_errors
-'''
+def driver_satisfaccion_quarantined_silver():
+   df=spark.readStream.table("driver_data_quarantine").filter("is_quarantined=true")
+   df_withT=df.withColumn("quarantined_timestamp", F.current_timestamp())
+   
+   return df_withT
