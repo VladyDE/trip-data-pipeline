@@ -1,7 +1,7 @@
 from pyspark import pipelines as dp
 from pyspark.sql import functions as F
-#from utilities import utils
-from Tproject_etl.utilities import utils
+from utilities import utils
+#from Tproject_etl.utilities import utils
 
 def get_rules(tag):
   """
@@ -61,5 +61,5 @@ def driver_satisfaccion_silver():
 def driver_satisfaccion_quarantined_silver():
    df=spark.readStream.table("driver_data_quarantine").filter("is_quarantined=true")
    df_withT=df.withColumn("quarantined_timestamp", F.current_timestamp())
-   
+
    return df_withT
