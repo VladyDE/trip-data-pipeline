@@ -7,18 +7,16 @@ resources:
         periodic:
           interval: 1
           unit: DAYS
-
+      
       parameters:
-        - name: catalog
-          default: ${var.catalog}
-        - name: schema
-          default: ${var.schema}
+      - name: catalog
+        default: ${var.catalog}
+      - name: schema
+        default: ${var.schema}
 
       tasks:
         - task_key: gold_trips_obt
           sql_task:
             file:
               path: ../gold/gold_trips_obt.sql
-            parameters:
-              catalog: "{{job.parameters.catalog}}"
-              schema: "{{job.parameters.schema}}"
+            warehouse_id: 016ceb1f62938957
