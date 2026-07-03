@@ -1,7 +1,7 @@
 from pyspark import pipelines as dp
 from pyspark.sql import functions as F
-from utilities import utils
-#from Tproject_etl.utilities import utils
+#from utilities import utils
+from Tproject_etl.utilities import utils
 
 def get_rules(tag):
   """
