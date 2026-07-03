@@ -40,7 +40,7 @@ SELECT
     -- Trip economics
     -- -------------------------------------------------------------------------
     costo_cash,
-    estado_desc,
+    estado_desc AS estado,
     CASE
         WHEN estado_desc = 'completado' THEN costo_cash
         ELSE 0
