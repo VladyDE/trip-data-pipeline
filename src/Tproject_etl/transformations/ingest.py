@@ -1,8 +1,8 @@
 from pyspark import pipelines as dp
 from pyspark.sql import functions as F
 from pyspark.sql.types import *
-from utilities import utils
-#from Tproject_etl.utilities import utils
+#from utilities import utils
+from Tproject_etl.utilities import utils
 
 # Landing zone path
 file_path="/Volumes/azu/default/driversatisfaccion_landingdata/"

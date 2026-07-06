@@ -5,8 +5,8 @@ bundle:
   uuid: 32585fe0-d186-489e-842b-45befefac29a
 
 include:
-  #- resources/*.yml
-  - resources/Tproject_etl.pipeline.yml
+  - resources/*.yml
+  #- resources/Tproject_etl.pipeline.yml
 
 artifacts:
   python_artifact:
