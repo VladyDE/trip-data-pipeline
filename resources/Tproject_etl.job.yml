@@ -23,5 +23,5 @@ resources:
         - task key: gold_daily_trips
           sql task:
             file:
-            path: ../gold/gold_trips_daily
+            path: ../gold/gold_trips_daily.sql
             warehouse_id: 016ceb1f62938957
