@@ -20,3 +20,8 @@ resources:
             file:
               path: ../gold/gold_trips_obt.sql
             warehouse_id: 016ceb1f62938957
+        - task key: gold_daily_trips
+          sql task:
+            file:
+            path: ../gold/gold_trips_daily
+            warehouse_id: 016ceb1f62938957
