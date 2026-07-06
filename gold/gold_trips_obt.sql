@@ -5,7 +5,7 @@
 USE CATALOG IDENTIFIER(:catalog);
 USE SCHEMA IDENTIFIER(:schema);
 
-CREATE OR REPLACE MATERIALIZED VIEW trips_obt_gold
+CREATE OR REPLACE TABLE trips_obt_gold
 COMMENT 'OBT for analytical consumption.'
 AS
 SELECT

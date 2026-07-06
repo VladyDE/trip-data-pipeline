@@ -5,7 +5,7 @@
 USE CATALOG IDENTIFIER(:catalog);
 USE SCHEMA IDENTIFIER(:schema);
 
-CREATE OR REPLACE MATERIALIZED VIEW daily_metrics_gold
+CREATE OR REPLACE TABLE daily_metrics_gold
 COMMENT 'Daily metrics aggregated.'
 AS
 SELECT
