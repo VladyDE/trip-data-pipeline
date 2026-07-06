@@ -1,13 +1,12 @@
 -- =============================================================================
--- gold_trips_obt.sql
 -- One Big Table at trip grain for analytical consumption.
 -- Grain: 1 row per trip (id_viaje)
 -- =============================================================================
 USE CATALOG IDENTIFIER(:catalog);
 USE SCHEMA IDENTIFIER(:schema);
 
-CREATE OR REPLACE MATERIALIZED VIEW gold_trips_obt
-COMMENT 'One big table at trip grain for analytical consumption. Source: driver_satisfaccion_silver.'
+CREATE OR REPLACE MATERIALIZED VIEW trips_obt_gold
+COMMENT 'OBT for analytical consumption.'
 AS
 SELECT
     -- -------------------------------------------------------------------------
