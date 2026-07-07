@@ -20,7 +20,7 @@ variables:
   schema:
     description: The schema to use
   landing_zone:
-    decription: csv files landing zone
+    description: csv files landing zone
 
 targets:
   dev:
@@ -35,7 +35,7 @@ targets:
     variables:
       catalog: azu
       schema: ${workspace.current_user.short_name}
-      landing_zone: /Volumes/azu/default/driversatisfaccion_landingdata
+      landing_zone: /Volumes/azu/default/driversatisfaccion_landingdata/
   prod:
     mode: production
     workspace:
@@ -45,7 +45,7 @@ targets:
     variables:
       catalog: azu
       schema: prod
-      landing_zone: /Volumes/azu/default/driversatisfaccion_landingdata
+      landing_zone: /Volumes/azu/default/driversatisfaccion_landingdata/
     permissions:
       - user_name: vladichoffx@gmail.com
         level: CAN_MANAGE
