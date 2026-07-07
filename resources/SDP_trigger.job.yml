@@ -10,3 +10,10 @@ resources:
         - task_key: run_silver_sdp_pipeline
           pipeline_task:
             pipeline_id: ${resources.pipelines.Tproject_etl.id}
+
+      trigger:
+        pause_status: UNPAUSED
+        file_arrival:
+          url: "${var.landing_zone}"
+          min_time_between_triggers_seconds: 900   # cooldown: máx 1 run cada 15 min
+          wait_after_last_change_seconds: 60        # debounce: espera 60s sin nuevos archivos
