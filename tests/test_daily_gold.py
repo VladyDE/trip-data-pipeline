@@ -21,27 +21,27 @@ def load_gold_sql(filepath: str) -> str:
 
 # Define the schema of silver so we can create sample silver data
 schema_silver = StructType([
-        StructField("id_viaje", IntegerType(), True),
-        StructField("fecha", TimestampType(), True),
-        StructField("placa", StringType(), True),
-        StructField("costo_cash", DoubleType(), True),
-        StructField("rating_viaje", IntegerType(), True),
-        StructField("rating_conductor_al_cliente", IntegerType(), True),
-        StructField("comentario_cliente", ArrayType(StringType()), True),
-        StructField("comentario_conductor", StringType(), True),
-        StructField("nombre_cliente", StringType(), True),
-        StructField("direccion_cliente", StringType(), True),
-        StructField("origen_manual", StringType(), True),
-        StructField("ingestion_timestamp", TimestampType(), True),
-        StructField("is_quarantined", BooleanType(), True),
-        StructField("tiene_rating_viaje", BooleanType(), True),
-        StructField("estado_desc", StringType(), True),
-        StructField("hora", IntegerType(), True),
-        StructField("dia_semana", StringType(), True),
-        StructField("fecha_solo", DateType(), True),
-        StructField("semana_anio", IntegerType(), True),
-        StructField("mes", IntegerType(), True)
-    ])
+    StructField("id_viaje", IntegerType(), True),
+    StructField("fecha", TimestampType(), True),
+    StructField("placa", StringType(), True),
+    StructField("costo_cash", DoubleType(), True),
+    StructField("rating_viaje", IntegerType(), True),
+    StructField("rating_conductor_al_cliente", IntegerType(), True),
+    StructField("comentario_cliente", ArrayType(StringType()), True),
+    StructField("comentario_conductor", StringType(), True),
+    StructField("nombre_cliente", StringType(), True),
+    StructField("direccion_cliente", StringType(), True),
+    StructField("origen_manual", StringType(), True),
+    StructField("ingestion_timestamp", TimestampType(), True),
+    StructField("is_quarantined", BooleanType(), True),
+    StructField("tiene_rating_viaje", BooleanType(), True),
+    StructField("estado_desc", StringType(), True),
+    StructField("hora", IntegerType(), True),
+    StructField("dia_semana", StringType(), True),
+    StructField("fecha_solo", DateType(), True),
+    StructField("semana_anio", IntegerType(), True),
+    StructField("mes", IntegerType(), True)
+])
 
 GOLD_SQL_PATH = "gold/gold_trips_daily.sql"
 
