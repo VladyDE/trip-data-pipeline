@@ -1,0 +1,12 @@
+# Job that triggers the Silver SDP pipeline whenever new files arrive to Unity Catalog Volume
+# Uses cooldown and debouncing rate control.
+
+resources:
+  jobs:
+    Tproject_dlt_trigger_job:
+      name: Tproject_sdp_trigger_job
+
+      tasks:
+        - task_key: run_silver_sdp_pipeline
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.Tproject_etl.id}
