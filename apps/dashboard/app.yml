@@ -6,6 +6,6 @@ env:
   - name: CATALOG
     value: "azu"
   - name: SCHEMA
-    value: "default"
+    value: "vladichoffx"
   - name: SQL_WAREHOUSE_HTTP_PATH
     valueFrom: "sql-warehouse-http-path"

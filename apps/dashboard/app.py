@@ -14,10 +14,10 @@ st.set_page_config(
 )
 
 CATALOG = os.getenv("CATALOG", "azu")
-SCHEMA = os.getenv("SCHEMA", "default")
+SCHEMA = os.getenv("SCHEMA", "vladichoffx")
 HTTP_PATH = os.getenv("SQL_WAREHOUSE_HTTP_PATH")
 
-TRIPS_TABLE = f"{CATALOG}.{SCHEMA}.gold_trips_obt"
+TRIPS_TABLE = f"{CATALOG}.{SCHEMA}.trips_obt_gold"
 DAILY_TABLE = f"{CATALOG}.{SCHEMA}.daily_metrics_gold"
 
 
@@ -37,7 +37,7 @@ def load_trips(start_date: date, end_date: date) -> pd.DataFrame:
     query = f"""
         SELECT *
         FROM {TRIPS_TABLE}
-        WHERE fecha BETWEEN ? AND ?
+        WHERE fecha_solo BETWEEN ? AND ?
     """
     conn = get_connection()
     with conn.cursor() as cur:
@@ -50,8 +50,8 @@ def load_daily_metrics(start_date: date, end_date: date) -> pd.DataFrame:
     query = f"""
         SELECT *
         FROM {DAILY_TABLE}
-        WHERE fecha BETWEEN ? AND ?
-        ORDER BY fecha
+        WHERE fecha_solo BETWEEN ? AND ?
+        ORDER BY fecha_solo
     """
     conn = get_connection()
     with conn.cursor() as cur:
@@ -61,7 +61,7 @@ def load_daily_metrics(start_date: date, end_date: date) -> pd.DataFrame:
 
 @st.cache_data(ttl=600)
 def get_date_bounds() -> tuple[date, date]:
-    query = f"SELECT MIN(fecha) AS min_fecha, MAX(fecha) AS max_fecha FROM {DAILY_TABLE}"
+    query = f"SELECT MIN(fecha_solo) AS min_fecha, MAX(fecha_solo) AS max_fecha FROM {DAILY_TABLE}"
     conn = get_connection()
     with conn.cursor() as cur:
         cur.execute(query)
