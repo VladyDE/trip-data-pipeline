@@ -71,12 +71,11 @@ def get_date_bounds() -> tuple[date, date]:
 
 def main():
     st.title("🚕 Tproject · Dashboard de Satisfacción del Conductor")
-    st.caption("Datos de la capa Gold · `gold_trips_obt` y `gold_metricas_diarias`")
+    st.caption("Datos de la capa Gold · `trips_obt_gold` y `daily_metrics_gold`")
 
     if not HTTP_PATH:
         st.error(
             "No se encontró `SQL_WAREHOUSE_HTTP_PATH`. Verifica el recurso "
-            "`sql-warehouse-http-path` en `app.yaml` y en `databricks.yml`."
         )
         st.stop()
 
@@ -86,7 +85,7 @@ def main():
         st.error(f"No se pudo conectar al warehouse o leer las tablas gold: {e}")
         st.stop()
 
-    # --- Sidebar: filtros interactivos ---
+    # --- Sidebar: filtro de rango de fechas ---
     st.sidebar.header("Filtros")
     date_range = st.sidebar.date_input(
         "Rango de fechas",
@@ -105,13 +104,6 @@ def main():
     if trips_df.empty:
         st.warning("No hay datos de viajes para el rango seleccionado.")
         st.stop()
-
-    # Filtro adicional por zona de origen, si la columna existe
-    zone_col = next((c for c in trips_df.columns if "origen" in c.lower()), None)
-    if zone_col:
-        zones = sorted(trips_df[zone_col].dropna().unique().tolist())
-        selected_zones = st.sidebar.multiselect("Zona de origen", zones, default=zones)
-        trips_df = trips_df[trips_df[zone_col].isin(selected_zones)]
 
     status_col = next((c for c in trips_df.columns if "estado" in c.lower()), None)
     if status_col:
@@ -155,14 +147,14 @@ def main():
 
         if rating_daily_col:
             fig_rating = px.line(
-                daily_df, x="fecha", y=rating_daily_col, markers=True,
+                daily_df, x="fecha_solo", y=rating_daily_col, markers=True,
                 title="Rating promedio por día",
             )
             left.plotly_chart(fig_rating, use_container_width=True)
 
         if revenue_daily_col:
             fig_revenue = px.bar(
-                daily_df, x="fecha", y=revenue_daily_col,
+                daily_df, x="fecha_solo", y=revenue_daily_col,
                 title="Ingresos por día",
             )
             right.plotly_chart(fig_revenue, use_container_width=True)
@@ -172,7 +164,7 @@ def main():
         )
         if cancel_daily_col:
             fig_cancel = px.line(
-                daily_df, x="fecha", y=cancel_daily_col, markers=True,
+                daily_df, x="fecha_solo", y=cancel_daily_col, markers=True,
                 title="% de cancelación por día",
             )
             st.plotly_chart(fig_cancel, use_container_width=True)
