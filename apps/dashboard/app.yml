@@ -8,4 +8,4 @@ env:
   - name: SCHEMA
     value: "vladichoffx"
   - name: SQL_WAREHOUSE_HTTP_PATH
-    valueFrom: "/sql/1.0/warehouses/016ceb1f62938957"
+    valueFrom: "sql-warehouse-http-path"
