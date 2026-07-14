@@ -1,4 +1,6 @@
+import logging
 import os
+import sys
 from datetime import date
 
 import pandas as pd
@@ -6,6 +8,25 @@ import plotly.express as px
 import streamlit as st
 from databricks import sql
 from databricks.sdk.core import Config
+
+# --- LOGGING (nivel controlado por env var, DEBUG solo si se activa explícitamente) ---
+DEBUG_MODE = os.getenv("APP_DEBUG", "false").lower() == "true"
+LOG_LEVEL = logging.DEBUG if DEBUG_MODE else logging.INFO
+
+logging.basicConfig(
+    level=LOG_LEVEL,
+    stream=sys.stdout,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+)
+logger = logging.getLogger("tproject_debug")
+# El conector databricks-sql y el SDK son muy verbosos en DEBUG (pueden loguear detalles
+# de sesión/queries); solo se sube su nivel si se activa el modo debug explícitamente.
+if DEBUG_MODE:
+    logging.getLogger("databricks.sql").setLevel(logging.DEBUG)
+    logging.getLogger("databricks.sdk").setLevel(logging.DEBUG)
+else:
+    logging.getLogger("databricks.sql").setLevel(logging.WARNING)
+    logging.getLogger("databricks.sdk").setLevel(logging.WARNING)
 
 # --- CONFIGURACIÓN DE LA PÁGINA ---
 st.set_page_config(
@@ -26,7 +47,25 @@ st.markdown("""
 
 CATALOG = os.getenv("CATALOG", "azu")
 SCHEMA = os.getenv("SCHEMA", "vladichoffx")
-HTTP_PATH = os.getenv("SQL_WAREHOUSE_HTTP_PATH")
+
+warehouse_id = os.getenv("SQL_WAREHOUSE_ID")
+HTTP_PATH = f"/sql/1.0/warehouses/{warehouse_id}" if warehouse_id else None
+
+# Config no sensible, útil siempre para confirmar contra qué catálogo/schema corre la app
+logger.info("Config app: CATALOG=%s SCHEMA=%s warehouse_id_set=%s",
+            CATALOG, SCHEMA, bool(warehouse_id))
+
+if DEBUG_MODE:
+    # Lista BLANCA explícita: solo se imprimen nombres de variables que sabemos que no
+    # contienen valores sensibles. No usar lista negra (excluir por nombre de secreto),
+    # porque cualquier credencial nueva que no calce el patrón se filtraría igual.
+    _safe_debug_keys = {"DATABRICKS_HOST", "SQL_WAREHOUSE_ID", "CATALOG", "SCHEMA"}
+    logger.debug("=== DEBUG ENV VARS (modo debug activo) ===")
+    for k in sorted(_safe_debug_keys):
+        logger.debug("ENV %s=%s", k, os.getenv(k))
+    logger.debug("DATABRICKS_CLIENT_ID presente=%s", bool(os.getenv("DATABRICKS_CLIENT_ID")))
+    logger.debug("DATABRICKS_CLIENT_SECRET presente=%s", bool(os.getenv("DATABRICKS_CLIENT_SECRET")))
+    logger.debug("=== FIN DEBUG ENV VARS ===")
 
 TRIPS_TABLE = f"{CATALOG}.{SCHEMA}.trips_obt_gold"
 DAILY_TABLE = f"{CATALOG}.{SCHEMA}.daily_metrics_gold"
@@ -40,12 +79,27 @@ COLOR_CANCEL = "#E74C3C"
 @st.cache_resource
 def get_connection():
     """Abre una conexión al SQL Warehouse usando la identidad OAuth de la app."""
+    logger.debug("get_connection: iniciando")
+
+    if not HTTP_PATH:
+        logger.error("get_connection: HTTP_PATH es None/vacío. Verificar SQL_WAREHOUSE_ID.")
+        raise ValueError("SQL_WAREHOUSE_ID no está configurado (env var vacía)")
+
     cfg = Config()
-    return sql.connect(
+
+    try:
+        cfg.authenticate()
+    except Exception:
+        logger.exception("get_connection: fallo autenticando contra Databricks")
+        raise
+
+    conn = sql.connect(
         server_hostname=cfg.host,
         http_path=HTTP_PATH,
         credentials_provider=lambda: cfg.authenticate,
     )
+    logger.info("get_connection: conexión establecida correctamente")
+    return conn
 
 @st.cache_data(ttl=300, show_spinner="Consultando datos de viajes...")
 def load_trips(start_date: date, end_date: date) -> pd.DataFrame:
@@ -109,12 +163,13 @@ def main():
     st.caption("Datos tomados de: `trips_obt_gold` y `daily_metrics_gold`")
 
     if not HTTP_PATH:
-        st.error("No se encontró `SQL_WAREHOUSE_HTTP_PATH`. Verificar el recurso.")
+        st.error("No se encontró `SQL_WAREHOUSE_ID`. Verificar el recurso.")
         st.stop()
 
     try:
         min_date, max_date = get_date_bounds()
     except Exception as e:
+        logger.exception("main: error consultando date bounds")
         st.error(f"No se pudo conectar al warehouse o leer las tablas gold: {e}")
         st.stop()
 

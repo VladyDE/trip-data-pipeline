@@ -6,7 +6,7 @@ resources:
       source_code_path: "../apps/dashboard"
 
       resources:
-        - name: "sql-warehouse-http-path"
+        - name: "sql-warehouse-id"
           sql_warehouse:
             id: ${var.warehouse_id}
             permission: "CAN_USE"

@@ -3,9 +3,12 @@ command: ["streamlit", "run", "app.py"]
 env:
   - name: STREAMLIT_BROWSER_GATHER_USAGE_STATS
     value: "false"
+  - name: APP_DEBUG
+    value: "false"
   - name: CATALOG
     value: "azu"
   - name: SCHEMA
     value: "vladichoffx"
-  - name: SQL_WAREHOUSE_HTTP_PATH
-    valueFrom: "sql-warehouse-http-path"
+  - name: SQL_WAREHOUSE_ID
+    valueFrom: "sql-warehouse-id"
+
