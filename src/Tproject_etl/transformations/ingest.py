@@ -36,6 +36,7 @@ def driver():
         .option("header", "true")
         .option("sep", ",")
         .option("timestampFormat", "yyyy-MM-dd HH:mm:ss")
+        .option("cloudFiles.schemaEvolutionMode", "rescue")
         .load(file_path)
     )
     

@@ -9,7 +9,7 @@ import streamlit as st
 from databricks import sql
 from databricks.sdk.core import Config
 
-# --- LOGGING (nivel controlado por env var, DEBUG solo si se activa explícitamente) ---
+# --- LOGGING (only avaliable if it's provided in env) ---
 DEBUG_MODE = os.getenv("APP_DEBUG", "false").lower() == "true"
 LOG_LEVEL = logging.DEBUG if DEBUG_MODE else logging.INFO
 
@@ -19,8 +19,8 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
 )
 logger = logging.getLogger("tproject_debug")
-# El conector databricks-sql y el SDK son muy verbosos en DEBUG (pueden loguear detalles
-# de sesión/queries); solo se sube su nivel si se activa el modo debug explícitamente.
+
+# --- We only activate logging if it's explicity instructed in env variable ---
 if DEBUG_MODE:
     logging.getLogger("databricks.sql").setLevel(logging.DEBUG)
     logging.getLogger("databricks.sdk").setLevel(logging.DEBUG)
@@ -28,7 +28,6 @@ else:
     logging.getLogger("databricks.sql").setLevel(logging.WARNING)
     logging.getLogger("databricks.sdk").setLevel(logging.WARNING)
 
-# --- CONFIGURACIÓN DE LA PÁGINA ---
 st.set_page_config(
     page_title="Tproject · Satisfacción del Conductor",
     page_icon="🚕",
@@ -51,14 +50,11 @@ SCHEMA = os.getenv("SCHEMA", "vladichoffx")
 warehouse_id = os.getenv("SQL_WAREHOUSE_ID")
 HTTP_PATH = f"/sql/1.0/warehouses/{warehouse_id}" if warehouse_id else None
 
-# Config no sensible, útil siempre para confirmar contra qué catálogo/schema corre la app
 logger.info("Config app: CATALOG=%s SCHEMA=%s warehouse_id_set=%s",
             CATALOG, SCHEMA, bool(warehouse_id))
 
 if DEBUG_MODE:
-    # Lista BLANCA explícita: solo se imprimen nombres de variables que sabemos que no
-    # contienen valores sensibles. No usar lista negra (excluir por nombre de secreto),
-    # porque cualquier credencial nueva que no calce el patrón se filtraría igual.
+    # White list with not sensitive data
     _safe_debug_keys = {"DATABRICKS_HOST", "SQL_WAREHOUSE_ID", "CATALOG", "SCHEMA"}
     logger.debug("=== DEBUG ENV VARS (modo debug activo) ===")
     for k in sorted(_safe_debug_keys):
@@ -90,7 +86,7 @@ def get_connection():
     try:
         cfg.authenticate()
     except Exception:
-        logger.exception("get_connection: fallo autenticando contra Databricks")
+        logger.exception("get_connection: fallo autenticando con Databricks")
         raise
 
     conn = sql.connect(
@@ -158,7 +154,7 @@ def apply_plotly_theme(fig, title="", y_title="", x_title=""):
 
 
 def main():
-    # --- ENCABEZADO ---
+    # --- Header text ---
     st.title("🚕 Información de Viajes Cuenca-Ecuador")
     st.caption("Datos tomados de: `trips_obt_gold` y `daily_metrics_gold`")
 
@@ -173,7 +169,7 @@ def main():
         st.error(f"No se pudo conectar al warehouse o leer las tablas gold: {e}")
         st.stop()
 
-    # --- SIDEBAR (Filtros estilizados) ---
+    # --- Sidebar with filters ---
     st.sidebar.markdown("### 🎛️ Filtros de Control")
     date_range = st.sidebar.date_input(
         "Rango de fechas",
@@ -199,7 +195,7 @@ def main():
         selected_statuses = st.sidebar.multiselect("Estado del viaje", statuses, default=statuses)
         trips_df = trips_df[trips_df[status_col].isin(selected_statuses)]
 
-    # --- SECCIÓN DE KPIs (Contenedores con Bordes) ---
+    # --- KPIs ---
     rating_col = next((c for c in trips_df.columns if "rating" in c.lower()), None)
     revenue_col = next(
         (c for c in trips_df.columns if "costo" in c.lower() or "revenue" in c.lower()),
@@ -237,18 +233,19 @@ def main():
             else:
                 st.metric("Tasa de Cancelación", "N/A")
 
-    st.write("") # Espacio estético
+    st.write("")
 
-    # --- SECCIÓN DE GRÁFICOS (Estructura Limpia) ---
+    # --- Graph section with plotly express---
     if not daily_df.empty:
         st.markdown("### 📈 Tendencias Diarias de Operación")
         
-        # Fila 1: Rating e Ingresos lado a lado
+        
         left, right = st.columns(2)
 
         rating_daily_col = next((c for c in daily_df.columns if "rating" in c.lower()), None)
         revenue_daily_col = next((c for c in daily_df.columns if "revenue" in c.lower() or "ingreso" in c.lower()), None)
 
+        # line chart for satisfaccion time evolution
         if rating_daily_col:
             fig_rating = px.line(
                 daily_df, x="fecha_solo", y=rating_daily_col,
@@ -257,6 +254,7 @@ def main():
             apply_plotly_theme(fig_rating, title="Evolución de Satisfacción (Rating)", y_title="Rating", x_title="Fecha")
             left.plotly_chart(fig_rating, use_container_width=True)
 
+        # Bar chart for revenue in time
         if revenue_daily_col:
             fig_revenue = px.bar(
                 daily_df, x="fecha_solo", y=revenue_daily_col,
@@ -265,7 +263,7 @@ def main():
             apply_plotly_theme(fig_revenue, title="Volumen de Ingresos por Día", y_title="Ingresos ($)", x_title="Fecha")
             right.plotly_chart(fig_revenue, use_container_width=True)
 
-        # Fila 2: Cancelaciones abarcando todo el ancho inferior para dar balance
+        # Line chart for cancel trips time evolution
         cancel_daily_col = next((c for c in daily_df.columns if "cancel" in c.lower()), None)
         if cancel_daily_col:
             fig_cancel = px.line(
@@ -275,7 +273,7 @@ def main():
             apply_plotly_theme(fig_cancel, title="Comportamiento de Cancelaciones (%)", y_title="% Cancelado", x_title="Fecha")
             st.plotly_chart(fig_cancel, use_container_width=True)
 
-    # --- TABLA DETALLADA ---
+    # --- Show the data in a table ---
     st.markdown("### 📋 Desglose Detallado de Viajes")
     st.dataframe(
         trips_df, 
