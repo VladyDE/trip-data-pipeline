@@ -21,6 +21,8 @@ variables:
     description: The schema to use
   landing_zone:
     description: csv files landing zone
+  warehouse_id:
+    description: id needed to connect to a specific warehouse
 
 targets:
   dev:
@@ -36,6 +38,7 @@ targets:
       catalog: azu
       schema: ${workspace.current_user.short_name}
       landing_zone: /Volumes/azu/default/driversatisfaccion_landingdata/
+      warehouse_id: 016ceb1f62938957
   prod:
     mode: production
     workspace:
@@ -46,6 +49,7 @@ targets:
       catalog: azu
       schema: prod
       landing_zone: /Volumes/azu/default/driversatisfaccion_landingdata/
+      warehouse_id: 016ceb1f62938957
     permissions:
       - user_name: vladichoffx@gmail.com
         level: CAN_MANAGE

@@ -1,0 +1,12 @@
+resources:
+  apps:
+    tproject_dashboard:
+      name: "tproject-dashboard"
+      description: "Dashboard de satisfacción del conductor (capa Gold)"
+      source_code_path: "../apps/dashboard"
+
+      resources:
+        - name: "sql-warehouse-id"
+          sql_warehouse:
+            id: ${var.warehouse_id}
+            permission: "CAN_USE"
