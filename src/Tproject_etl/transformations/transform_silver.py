@@ -53,6 +53,8 @@ def driver_satisfaccion_silver():
         .withColumn("mes",            F.month("fecha"))
     )
 
+    df= utils.zero_out_cost_for_invalid_statuses(df)
+
     return df
 
 @dp.table(

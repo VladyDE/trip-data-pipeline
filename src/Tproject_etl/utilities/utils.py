@@ -117,3 +117,20 @@ def parse_comentario_cliente(df: DataFrame) -> DataFrame:
             )
         )
     )
+
+def zero_out_cost_for_invalid_statuses(
+    df: DataFrame,
+    status_col: str = "estado_desc",
+    cost_col: str = "costo_cash"
+) -> DataFrame:
+    """
+    Makes costo_cash equal to cero when state is "cancelado" or "en_proceso"
+    """
+    zero_statuses = {"cancelado", "en_proceso"}
+    normalized_status = F.trim(F.lower(F.col(status_col)))
+    zero_condition = normalized_status.isin([s.lower() for s in zero_statuses])
+
+    return df.withColumn(
+        cost_col,
+        F.when(zero_condition, F.lit(0.0)).otherwise(F.col(cost_col)),
+    )
