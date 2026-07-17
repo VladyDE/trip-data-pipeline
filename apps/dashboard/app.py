@@ -194,6 +194,18 @@ def main():
         st.stop()
 
     status_col = next((c for c in trips_df.columns if "estado" in c.lower()), None)
+    plate_col = "placa" if "placa" in trips_df.columns else None
+    if plate_col:
+        plates = sorted(trips_df[plate_col].dropna().unique().tolist())
+        selected_plates = st.sidebar.multiselect(
+            "Placa",
+            plates,
+            default=[],
+            placeholder="Buscar o seleccionar placa(s)...",
+        )
+        if selected_plates:
+            trips_df = trips_df[trips_df[plate_col].isin(selected_plates)]
+    
     if status_col:
         statuses = sorted(trips_df[status_col].dropna().unique().tolist())
         selected_statuses = st.sidebar.multiselect("Estado del viaje", statuses, default=statuses)
