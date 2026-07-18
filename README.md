@@ -1,6 +1,6 @@
 # 🚕 Trip Data Pipeline
 
-End-to-end data engineering pipeline on Databricks that processes taxi driver satisfaction and trip data, built with a medallion architecture (Bronze → Silver → Gold), Delta Live Tables, and Databricks Asset Bundles.
+End-to-end data engineering pipeline on Databricks that processes taxi driver satisfaction and trip data from a popular taxi app that operates in Cuenca-Ecuador, built with a medallion architecture (Bronze → Silver → Gold), Delta Live Tables, and Databricks Asset Bundles.
 
 ![Architecture diagram placeholder](docs/images/architecture-diagram.png)
 *Diagram: Bronze → Silver → Gold flow with the file arrival trigger and the Streamlit app consuming Gold.*
