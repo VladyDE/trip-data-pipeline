@@ -31,7 +31,6 @@ Orchestration also includes a **file arrival trigger** job that kicks off the Si
 
 ---
 
----
 
 ## ⚙️ Requirements
 
@@ -79,21 +78,6 @@ Catalog and schema are parameterized via bundle variables (`${var.catalog}`, `${
 - Gold layer aggregations are tested by running SQL directly through `spark.sql()` inside pytest.
 - The app initially couldn't reach the Gold tables despite correct warehouse permissions — the real issue was passing the warehouse **ID** instead of the warehouse **HTTP path**; enabling debug logging surfaced this quickly.
 - `app.yaml` is outside Asset Bundle variable substitution — bundle variables only resolve in `databricks.yml` and resource YAMLs, so `CATALOG`/`SCHEMA` are hardcoded there for now.
-
----
-
-## 🗺️ Status
-
-| Milestone | Status |
-|---|---|
-| Bundle initialized & first deploy | ✅ |
-| Tests with pytest + Databricks Connect | ✅ |
-| Silver DLT pipeline (medallion transformations) | ✅ |
-| Lakeflow orchestration jobs | ✅ |
-| Gold layer | ✅ |
-| Streamlit app on Databricks Apps | ✅ |
-
-**Target ship date:** July 20, 2026
 
 ---
 
