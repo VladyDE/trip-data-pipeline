@@ -1,4 +1,4 @@
-# 🚕 Trip Data Pipeline
+# 🚕 Trip data pipeline for a popular data app in Cuenca-Ecuador
 
 End-to-end data engineering pipeline on Databricks that processes taxi driver satisfaction and trip data from a popular taxi app that operates in Cuenca-Ecuador, built with a medallion architecture (Bronze → Silver → Gold), Delta Live Tables, and Databricks Asset Bundles.
 
