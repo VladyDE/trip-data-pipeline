@@ -17,7 +17,7 @@ End-to-end data engineering pipeline on Databricks that processes taxi driver sa
 
 ## 🏗️ Architecture
 
-| Layer | What it does | How |
+| Layer | Goal | Approach |
 |---|---|---|
 | **Bronze** | Raw ingestion from CSV | Autoloader (`cloudFiles`) with explicit schema enforcement + column name sanitization |
 | **Silver** | Cleans, validates, and conforms data | Delta Live Tables pipeline (`Tproject_etl`) with a quarantine pattern driven by expectations loaded from a rules table |
@@ -65,13 +65,13 @@ Catalog and schema are parameterized via bundle variables (`${var.catalog}`, `${
 
 ## 🧪 Development approach
 
-- **TDD:** tests are written alongside pipeline code, using `conftest.py` fixtures for the Spark session and Silver schema.
+- **TDD:** tests are written alongside pipeline code, using `conftest.py` fixtures for the Spark session.
 - **Quarantine pattern:** expectations are applied only at the point data enters a layer, splitting records into "good to go" vs. quarantined — not used to validate in-layer transformations.
 - **Idempotency:** evaluated explicitly as part of the project, including how streaming tables interact with restores (see Notes below).
 
 ---
 
-## 📝 Notes & lessons learned
+## 📝 Notes
 
 - Streaming tables support time travel but not restore-based rollbacks — a stream treats restored data as new appends, causing duplicates. Schema evolution mistakes with Autoloader require a full refresh, not a rollback.
 - Materialized Views weren't used for Gold: they provision an internal pipeline on every refresh, which is only worth the overhead when source tables have row tracking, data volume is large, and refresh frequency is high. Plain `CREATE OR REPLACE TABLE ... AS SELECT` was the better fit here.
@@ -79,8 +79,3 @@ Catalog and schema are parameterized via bundle variables (`${var.catalog}`, `${
 - The app initially couldn't reach the Gold tables despite correct warehouse permissions — the real issue was passing the warehouse **ID** instead of the warehouse **HTTP path**; enabling debug logging surfaced this quickly.
 - `app.yaml` is outside Asset Bundle variable substitution — bundle variables only resolve in `databricks.yml` and resource YAMLs, so `CATALOG`/`SCHEMA` are hardcoded there for now.
 
----
-
-## 📄 License
-
-_Add a license if you plan to make this repo public._
