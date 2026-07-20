@@ -26,7 +26,7 @@ A robust, idempotent, parameter-driven pipeline covering ingestion, transformati
 
 Orchestration also includes a **file arrival trigger** job that kicks off the Silver DLT pipeline when new files land in the raw data volume, with cooldown/debounce controls to avoid redundant runs.
 
-![Dashboard screenshot placeholder](docs/images/dashboard-screenshot.png)
+![Dashboard screenshot placeholder](https://github.com/user-attachments/assets/4e94500d-4eb9-4e2c-926e-66b571ad4ff8)
 *Screenshot: Streamlit dashboard showing trip KPIs, daily trends, and the detailed trip table.*
 
 ---
