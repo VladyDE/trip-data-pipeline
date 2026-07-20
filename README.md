@@ -6,6 +6,7 @@ End-to-end data engineering pipeline on Databricks that processes taxi driver sa
 *SDP pipeline for raw ingestion along with trasnsformations in silver*
 
 ![image](https://github.com/user-attachments/assets/5b1f2ac4-4090-454a-84fd-2c39d1a0826a)
+
 *Gold layer job with SQL tasks*
 ---
 
