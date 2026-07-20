@@ -2,8 +2,9 @@
 
 End-to-end data engineering pipeline on Databricks that processes taxi driver satisfaction and trip data from a popular taxi app that operates in Cuenca-Ecuador, built with a medallion architecture (Bronze → Silver → Gold), Delta Live Tables, and Databricks Asset Bundles.
 
-![image](https://github.com/user-attachments/assets/5b1f2ac4-4090-454a-84fd-2c39d1a0826a)
-*Diagram: Bronze → Silver → Gold flow with the file arrival trigger and the Streamlit app consuming Gold.*
+![image](https://github.com/user-attachments/assets/4a18e7ae-0497-490e-b936-6fbfa7fe90c9)
+
+*SDP pipeline for raw ingestion along with trasnsformations in silver*
 
 ---
 
