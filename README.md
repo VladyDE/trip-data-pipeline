@@ -72,7 +72,7 @@ Catalog and schema are parameterized via bundle variables (`${var.catalog}`, `${
 
 ---
 
-## 📝 Notes
+## 📝 Notes & things to keep in mind
 
 - Streaming tables support time travel but not restore-based rollbacks — a stream treats restored data as new appends, causing duplicates. Schema evolution mistakes with Autoloader require a full refresh, not a rollback.
 - Materialized Views weren't used for Gold: they provision an internal pipeline on every refresh, which is only worth the overhead when source tables have row tracking, data volume is large, and refresh frequency is high. Plain `CREATE OR REPLACE TABLE ... AS SELECT` was the better fit here.
