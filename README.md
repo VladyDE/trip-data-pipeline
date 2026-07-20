@@ -49,11 +49,11 @@ Orchestration also includes a **file arrival trigger** job that kicks off the Si
 git clone https://github.com/VladyDE/trip-data-pipeline.git
 cd trip-data-pipeline
 
-# Authenticate
+# Authenticate on databricks with ur account
 databricks auth login
 
-# Run tests locally (Databricks Connect)
-pytest
+# Run tests locally (Databricks Connect) with uv
+uv run pytest
 
 # Deploy to dev
 databricks bundle deploy --target dev
