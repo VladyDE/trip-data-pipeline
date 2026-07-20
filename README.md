@@ -2,10 +2,10 @@
 
 End-to-end data engineering pipeline on Databricks that processes taxi driver satisfaction and trip data from a popular taxi app that operates in Cuenca-Ecuador, built with a medallion architecture (Bronze → Silver → Gold), Delta Live Tables, and Databricks Asset Bundles.
 
-![image](https://github.com/user-attachments/assets/4a18e7ae-0497-490e-b936-6fbfa7fe90c9)
+![SDP](https://github.com/user-attachments/assets/4a18e7ae-0497-490e-b936-6fbfa7fe90c9)
 *SDP pipeline for raw ingestion along with trasnsformations in silver*
 
-![image](https://github.com/user-attachments/assets/5b1f2ac4-4090-454a-84fd-2c39d1a0826a)
+![GoldJob](https://github.com/user-attachments/assets/5b1f2ac4-4090-454a-84fd-2c39d1a0826a)
 
 *Gold layer job with SQL tasks*
 
@@ -26,7 +26,8 @@ A robust, idempotent, parameter-driven pipeline covering ingestion, transformati
 
 Orchestration also includes a **file arrival trigger** job that kicks off the Silver DLT pipeline when new files land in the raw data volume, with cooldown/debounce controls to avoid redundant runs.
 
-![Dashboard screenshot placeholder](https://github.com/user-attachments/assets/4e94500d-4eb9-4e2c-926e-66b571ad4ff8)
+![Dashboard1](https://github.com/user-attachments/assets/4e94500d-4eb9-4e2c-926e-66b571ad4ff8)
+![Dashboard2](https://github.com/user-attachments/assets/74d7bd54-2f7e-4e02-b000-3e6124bdf604)
 *Screenshot: Streamlit dashboard showing trip KPIs, daily trends, and the detailed trip table.*
 
 ---
