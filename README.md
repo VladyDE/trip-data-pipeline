@@ -19,7 +19,7 @@ End-to-end data engineering pipeline on Databricks that processes taxi driver sa
 
 | Layer | Goal | Approach |
 |---|---|---|
-| **Bronze** | Raw ingestion from CSV | Autoloader (`cloudFiles`) with explicit schema enforcement + column name sanitization |
+| **Bronze** | Raw ingestion from CSV | Autoloader with explicit schema enforcement + column name sanitization |
 | **Silver** | Cleans, validates, and conforms data | Delta Live Tables pipeline (`Tproject_etl`) with a quarantine pattern driven by expectations loaded from a rules table |
 | **Gold** | Serves analytics-ready aggregates | Lakeflow Job with SQL Tasks producing `trips_obt_gold` and `daily_metrics_gold` as plain Delta tables |
 | **App** | Visualizes Gold data | Streamlit dashboard deployed via Databricks Apps, querying Gold through a SQL Warehouse |
