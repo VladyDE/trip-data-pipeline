@@ -7,11 +7,9 @@ End-to-end data engineering pipeline on Databricks that processes taxi driver sa
 
 ---
 
-## 📌 Overview
+## 📌 Goal
 
-- **Goal:** a robust, idempotent, parameter-driven pipeline covering ingestion, transformation, and analytics consumption, deployed and versioned through CI/CD-style practices with Databricks Asset Bundles and GitHub.
-- **Domain:** taxi trip records and driver satisfaction data for Cuenca, Ecuador.
-- **Status:** feature-complete — Bronze, Silver, Gold, orchestration, and the dashboard app are all implemented and deployed.
+A robust, idempotent, parameter-driven pipeline covering ingestion, transformation, and analytics consumption, deployed and versioned through CI/CD-style and TDD best practices with Databricks Asset Bundles and GitHub.
 
 ---
 
@@ -77,5 +75,4 @@ Catalog and schema are parameterized via bundle variables (`${var.catalog}`, `${
 - Materialized Views weren't used for Gold: they provision an internal pipeline on every refresh, which is only worth the overhead when source tables have row tracking, data volume is large, and refresh frequency is high. Plain `CREATE OR REPLACE TABLE ... AS SELECT` was the better fit here.
 - Gold layer aggregations are tested by running SQL directly through `spark.sql()` inside pytest.
 - The app initially couldn't reach the Gold tables despite correct warehouse permissions — the real issue was passing the warehouse **ID** instead of the warehouse **HTTP path**; enabling debug logging surfaced this quickly.
-- `app.yaml` is outside Asset Bundle variable substitution — bundle variables only resolve in `databricks.yml` and resource YAMLs, so `CATALOG`/`SCHEMA` are hardcoded there for now.
 
