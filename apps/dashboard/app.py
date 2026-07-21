@@ -44,6 +44,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# Provide default values in case something goes wrong with the env variables (might want to change this to ur specific values in ur tenant)
 CATALOG = os.getenv("CATALOG", "azu")
 SCHEMA = os.getenv("SCHEMA", "vladichoffx")
 
