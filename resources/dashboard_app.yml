@@ -5,6 +5,13 @@ resources:
       description: "Dashboard de satisfacción del conductor (capa Gold)"
       source_code_path: "../apps/dashboard"
 
+      config:
+        env:
+          - name: CATALOG
+            value: ${var.catalog}
+          - name: SCHEMA
+            value: ${var.schema}
+
       resources:
         - name: "sql-warehouse-id"
           sql_warehouse:

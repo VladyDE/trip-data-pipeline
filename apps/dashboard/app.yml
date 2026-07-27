@@ -5,10 +5,6 @@ env:
     value: "false"
   - name: APP_DEBUG
     value: "false"
-  - name: CATALOG
-    value: "azu"
-  - name: SCHEMA
-    value: "vladichoffx"
   - name: SQL_WAREHOUSE_ID
     valueFrom: "sql-warehouse-id"
 
